@@ -46,6 +46,7 @@ default_settings = {
         "EMOTE": True,
         "UNKNOWN": True,
     },
+    "mining_priority": "TIME_TO_END",
     "proxy": "",
 }
 
@@ -59,6 +60,7 @@ class Settings:
     inventory_filters: InventoryFilters
     minimum_refresh_interval_minutes: int
     mining_benefits: dict[str, bool]
+    mining_priority: str
     proxy: str
 
     def __init__(self):
