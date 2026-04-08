@@ -54,6 +54,14 @@ class TestSettingsAPI(unittest.IsolatedAsyncioTestCase):
         games = ["Game 1"]
         manager.update_settings({"games_to_watch": games})
         mock_callback.assert_called_once()
+        mock_callback.reset_mock()
+
+        # 4. Update Mining Priority (SHOULD trigger callback)
+        priority = "PROGRESS"
+        manager.update_settings({"mining_priority": priority})
+        mock_callback.assert_called_once()
+        self.assertEqual(mock_settings.mining_priority, priority)
+        mock_console.print.assert_called_with("Setting changed: mining_priority = PROGRESS")
 
 
 if __name__ == "__main__":
