@@ -10,6 +10,7 @@ from __future__ import annotations
 import asyncio
 import logging
 from collections import abc
+from datetime import datetime, timezone
 from typing import TYPE_CHECKING
 
 from src.config import GQL_OPERATIONS, MAX_INT
@@ -49,25 +50,52 @@ class ChannelService:
 
     def get_priority(self, channel: Channel) -> int:
         """
-        Return a priority number for a given channel based on games_to_watch order.
+        Return a priority number for a given channel based on the selected mining priority mode.
 
-        Priority is determined by the position of the channel's game in the
-        wanted_games list. Lower numbers indicate higher priority.
+        Priority modes:
+        - PRIORITY_LIST: Position in wanted_games list (default)
+        - TIME_TO_END: Time remaining until the campaign ends (earlier ends first)
+        - TIME_RATIO: Progression ratio of the campaign (higher ratio first)
 
         Args:
             channel: The channel to evaluate
 
         Returns:
             Priority number where:
-            - 0 has the highest priority (first in games_to_watch list)
-            - Higher numbers indicate lower priority
-            - MAX_INT signifies the lowest possible priority (unwanted game or offline)
+            - Lower numbers indicate higher priority
+            - MAX_INT signifies the lowest possible priority
         """
         if (
             (game := channel.game) is None  # None when OFFLINE or no game set
             or game not in self._twitch.wanted_games  # we don't care about the played game
         ):
             return MAX_INT
+
+        mode = getattr(self._twitch.settings, "mining_priority", "PRIORITY_LIST")
+
+        if mode == "PRIORITY_LIST":
+            return self._twitch.wanted_games.index(game)
+
+        # Find active campaign for this game
+        now = datetime.now(timezone.utc)
+        campaign = next(
+            (c for c in self._twitch.inventory if c.game == game and c.active), None
+        )
+
+        if campaign is None:
+            return MAX_INT
+
+        if mode == "TIME_TO_END":
+            return int(campaign.ends_at.timestamp())
+
+        if mode == "TIME_RATIO":
+            total_duration = (campaign.ends_at - campaign.starts_at).total_seconds()
+            if total_duration <= 0:
+                return MAX_INT
+            elapsed = (now - campaign.starts_at).total_seconds()
+            ratio = max(0.0, min(1.0, elapsed / total_duration))
+            return int((1.0 - ratio) * 1000000)
+
         return self._twitch.wanted_games.index(game)
 
     @staticmethod
