@@ -1043,6 +1043,9 @@ function updateSettingsUI(settings) {
     document.getElementById('dark-mode').checked = settings.dark_mode || false;
     document.getElementById('connection-quality').value = settings.connection_quality || 1;
     document.getElementById('minimum-refresh-interval').value = settings.minimum_refresh_interval_minutes || 30;
+    if (document.getElementById('mining-priority')) {
+        document.getElementById('mining-priority').value = settings.mining_priority || 'PRIORITY_LIST';
+    }
 
     // Update proxy settings and indicator
     const proxyUrl = settings.proxy || '';
@@ -1475,6 +1478,7 @@ async function saveSettings() {
         language: document.getElementById('language').value,
         connection_quality: parseInt(document.getElementById('connection-quality').value),
         minimum_refresh_interval_minutes: parseInt(document.getElementById('minimum-refresh-interval').value),
+        mining_priority: document.getElementById('mining-priority').value,
         proxy: state.settings.proxy || '',
         games_to_watch: state.settings.games_to_watch || [],
         inventory_filters: getInventoryFilters(),
@@ -1671,8 +1675,20 @@ function applyTranslations(t) {
         const refreshLabel = settingsTab.querySelector('label:has(#minimum-refresh-interval)');
         if (refreshLabel) {
             const input = refreshLabel.querySelector('input');
-            refreshLabel.textContent = t.gui.settings.minimum_refresh + ' ';
+            refreshLabel.textContent = t.gui.settings.general.minimum_refresh + ' ';
             refreshLabel.appendChild(input);
+        }
+
+        const miningPriorityLabel = document.getElementById('settings-mining-priority-label');
+        if (miningPriorityLabel && t.gui?.settings?.general?.mining_priority) {
+            miningPriorityLabel.textContent = t.gui.settings.general.mining_priority;
+        }
+
+        const miningPrioritySelect = document.getElementById('mining-priority');
+        if (miningPrioritySelect && t.gui?.settings?.general) {
+            miningPrioritySelect.options[0].textContent = t.gui.settings.general.priority_list;
+            miningPrioritySelect.options[1].textContent = t.gui.settings.general.time_to_end;
+            miningPrioritySelect.options[2].textContent = t.gui.settings.general.time_ratio;
         }
 
         const benefitsHelp = document.getElementById('settings-benefits-help');
@@ -1932,6 +1948,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('language').addEventListener('change', saveSettings);
     document.getElementById('connection-quality').addEventListener('change', saveSettings);
     document.getElementById('minimum-refresh-interval').addEventListener('change', saveSettings);
+    document.getElementById('mining-priority').addEventListener('change', saveSettings);
     // Proxy uses a manual "Set Proxy" button instead of auto-save
     document.getElementById('set-proxy-btn').addEventListener('click', () => {
         const proxyInput = document.getElementById('proxy-url');

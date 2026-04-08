@@ -194,6 +194,14 @@
                         <input type="number" id="minimum-refresh-interval" min="1" max="1440" value="30">
                     </label>
                     <label>
+                        <span id="settings-mining-priority-label">Mining Priority:</span>
+                        <select id="mining-priority">
+                            <option value="PRIORITY_LIST">Priority List</option>
+                            <option value="TIME_TO_END">Time to End</option>
+                            <option value="TIME_RATIO">Time Ratio</option>
+                        </select>
+                    </label>
+                    <label>
                         Proxy URL:
                         <input type="text" id="proxy-url" placeholder="http://user:pass@host:port">
                         <button id="set-proxy-btn" class="secondary-btn" title="Set and verify proxy">Set
