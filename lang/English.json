@@ -100,7 +100,11 @@
         "settings": {
             "general": {
                 "name": "General",
-                "dark_mode": "Dark Mode"
+                "dark_mode": "Dark Mode",
+                "mining_priority": "Mining Priority:",
+                "priority_list": "Priority List",
+                "time_to_end": "Time to End",
+                "time_ratio": "Time Ratio"
             },
             "mining_benefits": "Mining Benefits",
             "mining_benefits_help": "Select which types of drops you want to mine.",
