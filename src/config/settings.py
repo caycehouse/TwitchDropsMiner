@@ -46,7 +46,7 @@ default_settings = {
         "EMOTE": True,
         "UNKNOWN": True,
     },
-    "mining_priority": "TIME_TO_END",
+    "mining_priority": "PRIORITY_LIST",
     "proxy": "",
 }
 

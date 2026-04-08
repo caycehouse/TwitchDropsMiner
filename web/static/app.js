@@ -1675,7 +1675,7 @@ function applyTranslations(t) {
         const refreshLabel = settingsTab.querySelector('label:has(#minimum-refresh-interval)');
         if (refreshLabel) {
             const input = refreshLabel.querySelector('input');
-            refreshLabel.textContent = t.gui.settings.general.minimum_refresh + ' ';
+            refreshLabel.textContent = t.gui.settings.minimum_refresh + ' ';
             refreshLabel.appendChild(input);
         }
 
@@ -1685,10 +1685,10 @@ function applyTranslations(t) {
         }
 
         const miningPrioritySelect = document.getElementById('mining-priority');
-        if (miningPrioritySelect && t.gui?.settings?.general) {
-            miningPrioritySelect.options[0].textContent = t.gui.settings.general.priority_list;
-            miningPrioritySelect.options[1].textContent = t.gui.settings.general.time_to_end;
-            miningPrioritySelect.options[2].textContent = t.gui.settings.general.time_ratio;
+        if (miningPrioritySelect && t.gui?.settings?.general?.mining_priorities) {
+            miningPrioritySelect.options[0].textContent = t.gui.settings.general.mining_priorities.priority_list;
+            miningPrioritySelect.options[1].textContent = t.gui.settings.general.mining_priorities.time_to_end;
+            miningPrioritySelect.options[2].textContent = t.gui.settings.general.mining_priorities.time_ratio;
         }
 
         const benefitsHelp = document.getElementById('settings-benefits-help');
